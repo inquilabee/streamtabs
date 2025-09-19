@@ -5,7 +5,7 @@
 ## 🎥 Demo Video
 
 <video width="800" controls>
-  <source src="demo/streamtabs_demo.mp4" type="video/mp4">
+  <source src="https://github.com/inquilabee/streamtabs/blob/main/demo/streamtabs_demo.mp4" type="video/mp4">
   Your browser does not support the video tag.
 </video>
 
