@@ -1,6 +1,15 @@
 # StreamTabs
 
-**StreamTabs** is a Python package that provides a modular tab system for Streamlit applications. It allows you to organize your Streamlit apps into reusable, interconnected tabs with automatic data flow between them.
+**StreamTabs** is a Python package that provides a modular tab system for Streamlit applications. It allows you to organize your Streamlit apps into reusable, interconnected tabs with automatic data flow between them. StreamTabs handles session management automatically, so you rarely need explicit `st.session_state` calls.
+
+## 🎥 Demo Video
+
+<video width="800" controls>
+  <source src="demo/streamtabs_demo.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
+
+*Watch StreamTabs in action - see how easy it is to create interconnected tabs with automatic data flow!*
 
 ## Features
 
@@ -9,13 +18,26 @@
 - 🎯 **Clear Dependencies**: Explicitly declare what data each tab needs and provides
 - 📊 **Sidebar Support**: Create reusable sidebar components
 - 🎯 **Easy Integration**: Simple import and registration system
+- 🔐 **Automatic Session Management**: Implicit session state handling - no need for explicit `st.session_state` calls
 - 🐍 **Python 3.10+**: Modern Python support
 
 ## Installation
 
+### From PyPI (Recommended)
+
+```bash
+pip install streamtabs
+```
+
+### From Source
+
 This project uses Poetry for dependency management:
 
 ```bash
+# Clone the repository
+git clone https://github.com/inquilabee/streamtabs.git
+cd streamtabs
+
 # Install dependencies
 poetry install
 
@@ -25,12 +47,30 @@ poetry shell
 
 ## Quick Start
 
+### Directory Structure
+
+Create a directory structure like this:
+
+```
+your-streamlit-app/
+├── app.py                 # Main Streamlit application
+├── tabs/                  # Your tab modules
+│   ├── __init__.py       # Import all tab classes
+│   ├── data_input.py     # Example tab
+│   └── data_analysis.py  # Example tab
+└── sidebars/             # Your sidebar modules (optional)
+    ├── __init__.py       # Import all sidebar classes
+    └── config.py         # Example sidebar
+```
+
+**Note**: The `apps/` directory in this repository is an example structure you can use as a reference.
+
 ### 1. Create Your Tab Classes
 
-Create tab files in `apps/tabs/`:
+Create tab files in your `tabs/` directory:
 
 ```python
-# apps/tabs/my_tab.py
+# tabs/my_tab.py
 import streamlit as st
 from streamtabs.core import STTab
 
@@ -52,10 +92,10 @@ class MyTab(STTab):
 
 ### 2. Create Sidebar Components (Optional)
 
-Create sidebar files in `apps/sidebars/`:
+Create sidebar files in your `sidebars/` directory:
 
 ```python
-# apps/sidebars/my_sidebar.py
+# sidebars/my_sidebar.py
 import streamlit as st
 from streamtabs.core import STSidebar
 
@@ -75,8 +115,8 @@ class MySidebar(STSidebar):
 ```python
 # app.py
 import streamlit as st
-from apps.sidebars import *  # noqa
-from apps.tabs import *  # noqa
+from sidebars import *  # noqa
+from tabs import *  # noqa
 from streamtabs.core import STSidebar, STTab
 
 st.set_page_config(page_title="My App", layout="wide")
@@ -115,20 +155,66 @@ This repository includes a complete example demonstrating inter-tab data flow:
 
 ### Running the Example
 
+If you installed from PyPI:
+```bash
+# Clone the example repository or download the example files
+git clone https://github.com/inquilabee/streamtabs.git
+cd streamtabs
+streamlit run app.py
+```
+
+If you installed from source:
 ```bash
 poetry run streamlit run app.py
 ```
 
 ## Tab Meta Configuration
 
-Each tab class requires a `Meta` class with the following attributes:
+Each tab class requires:
 
-- `name`: Unique identifier for the tab
-- `title`: Display name in the tab header
-- `icon`: Emoji or icon for the tab
-- `order`: Display order (lower numbers appear first)
-- `required_inputs`: List of input keys from other tabs
-- `required_outputs`: List of output keys this tab provides
+1. **A `Meta` class** with the following attributes:
+   - `name`: Unique identifier for the tab
+   - `title`: Display name in the tab header
+   - `icon`: Emoji or icon for the tab
+   - `order`: Display order (lower numbers appear first)
+   - `required_inputs`: List of input keys from other tabs
+   - `required_outputs`: List of output keys this tab provides
+
+2. **A `render` method** that implements the tab's functionality:
+
+```python
+def render(self, **kwargs):
+    """Implement your tab's UI and logic here."""
+    # Your tab content here
+    return {"output_key": "output_value"}  # Optional: return data for other tabs
+```
+
+### Tab Documentation
+
+Each tab automatically displays documentation from the `render` method's docstring. This appears at the top of the tab when rendered:
+
+```python
+def render(self, **kwargs):
+    """This docstring will be displayed as tab documentation."""
+    # Your tab content here
+```
+
+### Accessing Input Data
+
+Input data from other tabs can be accessed in two ways:
+
+1. **Direct Parameters**: Declare inputs as method parameters
+2. **Via kwargs**: Access through the `kwargs` dictionary
+
+```python
+def render(self, my_data, **kwargs):
+    """Access input data directly as parameters."""
+    st.write(f"Direct access: {my_data}")
+    
+    # Or access via kwargs
+    other_data = kwargs.get("other_data")
+    st.write(f"Via kwargs: {other_data}")
+```
 
 ## Data Flow & Dependencies
 
@@ -140,6 +226,7 @@ StreamTabs uses explicit dependency declaration to ensure clear data flow betwee
 - **🚫 Error Prevention**: Automatic validation of data dependencies
 - **📖 Self-Documenting**: Code clearly shows the relationship between tabs
 - **🔧 Easy Debugging**: Missing dependencies are caught early with clear error messages
+- **🔐 Automatic Session Management**: Data persistence between tab switches without manual `st.session_state` handling
 
 ### How It Works
 
@@ -225,55 +312,11 @@ class BrokenTab(STTab):
 3. **🔄 Keep It Simple**: Avoid circular dependencies
 4. **🧪 Test Dependencies**: Verify your data flow works as expected
 
-## Development
-
-### Project Structure
-
-```
-streamtabs/
-├── streamtabs/          # Core package
-│   └── core/
-│       └── core.py      # STTab and STSidebar classes
-├── apps/                # Example applications
-│   ├── tabs/            # Tab modules
-│   └── sidebars/        # Sidebar modules
-├── app.py              # Main Streamlit app
-├── pyproject.toml      # Poetry configuration
-└── README.md
-```
-
-### Adding New Tabs
-
-1. Create a new file in `apps/tabs/`
-2. Define your tab class inheriting from `STTab`
-3. Import the tab in `apps/tabs/__init__.py`
-4. The tab will be automatically registered when you run the app
-
-### Adding New Sidebars
-
-1. Create a new file in `apps/sidebars/`
-2. Define your sidebar class inheriting from `STSidebar`
-3. Import the sidebar in `apps/sidebars/__init__.py`
-4. The sidebar will be automatically registered when you run the app
-
 ## Requirements
 
 - Python 3.10+
 - Streamlit >= 1.49.1
-- Poetry (for dependency management)
 
 ## License
 
 MIT License - see LICENSE file for details.
-
-## Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests if applicable
-5. Submit a pull request
-
-## Support
-
-For questions or issues, please open an issue on the GitHub repository.
