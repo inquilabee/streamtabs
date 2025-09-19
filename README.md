@@ -4,10 +4,11 @@
 
 ## 🎥 Demo Video
 
-<video width="800" controls>
-  <source src="https://github.com/inquilabee/streamtabs/blob/main/demo/streamtabs_demo.mp4" type="video/mp4">
-  Your browser does not support the video tag.
-</video>
+## 🎥 Demo Video
+
+[![Watch the demo](https://github.com/inquilabee/streamtabs/raw/main/demo/streamtabs_demo.gif)](https://github.com/inquilabee/streamtabs/raw/main/demo/streamtabs_demo.mp4)
+
+*Watch
 
 *Watch StreamTabs in action - see how easy it is to create interconnected tabs with automatic data flow!*
 
