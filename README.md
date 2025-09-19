@@ -2,13 +2,10 @@
 
 **StreamTabs** is a Python package that provides a modular tab system for Streamlit applications. It allows you to organize your Streamlit apps into reusable, interconnected tabs with automatic data flow between them. StreamTabs handles session management automatically, so you rarely need explicit `st.session_state` calls.
 
-## 🎥 Demo Video
 
-## 🎥 Demo Video
+## 🎥 Demo
 
-[![Watch the demo](https://github.com/inquilabee/streamtabs/raw/main/demo/streamtabs_demo.gif)](https://github.com/inquilabee/streamtabs/raw/main/demo/streamtabs_demo.mp4)
-
-*Watch
+![StreamTabs Demo](https://github.com/inquilabee/streamtabs/raw/main/demo/streamtabs_demo.gif)
 
 *Watch StreamTabs in action - see how easy it is to create interconnected tabs with automatic data flow!*
 
