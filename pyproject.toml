@@ -1,0 +1,26 @@
+[project]
+name = "streamtabs"
+version = "0.1.0"
+description = "Streamlit Apps on Tabs"
+authors = [
+    {name = "Vishal Mishra",email = "vishal.k.mishra2@gmail.com"}
+]
+license = {text = "MIT"}
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "streamlit (>=1.49.1,<2.0.0)"
+]
+
+packages = [
+    { include = "streamtabs" }
+]
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.group.dev.dependencies]
+black = "^25.9.0"
+ruff = "^0.13.1"
+
